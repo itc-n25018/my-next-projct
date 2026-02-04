@@ -14,14 +14,13 @@ type Props = {
 export default async function Page({ params }: Props) {
   const current = parseInt(params.current, 10);
 
+  console.log(current);
+
   if (Number.isNaN(current) || current < 1) {
     notFound();
   }
 
-  const category = await getCategoryDetail(params.id).catch(notFound);
-
   const { contents: news, totalCount } = await getNewsList({
-    filters: `category[equals]${category.id}`,
     limit: NEWS_LIST_LIMIT,
     offset: NEWS_LIST_LIMIT * (current - 1),
   });
@@ -33,11 +32,7 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <NewsList news={news} />
-      <Pagination
-        totalCount={totalCount}
-        current={current}
-        basePath={`/news/category/${category.id}`}
-      />
+      <Pagination totalCount={totalCount} current={current} />
     </>
   );
 }
